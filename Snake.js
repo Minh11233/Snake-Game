@@ -115,6 +115,7 @@ setTimeout(function (){
 let myInterval;
 function startGame() {
         new Audio("./audio/start.mp3").play()
+        new Audio("./audio/background.mp3").play();
         myInterval = setInterval(function (){
         player.move();
         player.Death();
