@@ -14,15 +14,12 @@ function Snake() {
         new Vector2d (UNIT * 16,UNIT * 15),
         new Vector2d (UNIT * 17,UNIT * 15),
     ]
-    this.hit = new Audio("./audio/hit.mp3")
-    this.eat = new Audio("./audio/eat.mp3")
     this.draw = function () {
         ctx.drawImage(imgLeft,SnakeBody[0].x,SnakeBody[0].y,UNIT,UNIT)
         function clearCanvas(color) {
             ctx.fillStyle = color;
             ctx.fillRect(0, 0, 760,20);}
-        clearCanvas("pink")
-        // ctx.clearRect(0,0,100,50)
+        clearCanvas("darkolivegreen")
         ctx.fillStyle = 'yellow'
         for (let i = 1; i < SnakeBody.length; i++) {
             ctx.fillRect(SnakeBody[i].x,SnakeBody[i].y, UNIT-1, UNIT-1)
@@ -50,7 +47,7 @@ function Snake() {
         let head = SnakeBody[0];
         if(food.x === head.x && food.y === head.y) {
             score++;
-            this.eat.play();
+            new Audio("./audio/eat.mp3").play();
         }
         return food.x === head.x && food.y === head.y // boolean cả 2 cùng đúng thì if mới đc chạy
     }
@@ -64,9 +61,9 @@ function Snake() {
     }
 
     function gameOverStyle () {
-        ctx.font = "50px Arial";
+        ctx.font = "60px Algerian";
         ctx.fillStyle = "red"
-        ctx.fillText("GAME OVER!", 225,350)
+        ctx.fillText("GAME OVER", 225,350)
         new Audio("hit.mp3")
     }
 
@@ -74,13 +71,13 @@ function Snake() {
             if (SnakeBody[0].x < 0 || SnakeBody[0].x === 760 || SnakeBody[0].y < 20 || SnakeBody[0].y === 720) {
                 clearInterval(myInterval)
                 gameOverStyle ()
-                this.hit.play()
+                new Audio("./audio/hit.mp3").play()
             }
             for (let i = 1; i < SnakeBody.length-1; i++) {
                 if (SnakeBody[i].x === SnakeBody[0].x && SnakeBody[i].y === SnakeBody[0].y) {
                     clearInterval(myInterval)
                     gameOverStyle ()
-                    this.hit.play()
+                    new Audio("./audio/hit.mp3").play()
                 }
             }
 }
@@ -103,29 +100,35 @@ function Food () {
 }
 function drawScore() {
     ctx.font = "16px Arial";
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "white";
     ctx.fillText("Score: " + score, 8, 16);
 }
 
-//let player = []
-//player.push(new Snake())
 let player = new Snake();
-player.draw();
+setTimeout(function (){
+    player.draw()
+},30)
 let apple = new Food();
 setTimeout(function (){
     apple.draw()
-},50)
-
-let myInterval = setInterval(function (){
-    player.move();
-    player.Death();
-    drawScore();
-    if(player.Eat(apple)) {
-        player.Grow();
-        apple.draw();
-    }
+},30)
+let myInterval;
+function startGame() {
+        new Audio("./audio/start.mp3").play()
+        myInterval = setInterval(function (){
+        player.move();
+        player.Death();
+        drawScore();
+        if(player.Eat(apple)) {
+            player.Grow();
+            setTimeout(function (){
+                apple.draw()
+            },100);
+        }
     },100);
 
+}
+console.log(document.querySelector("body").style.backgroundImage)
 document.onkeydown = function (evt){
         switch (evt.keyCode) {
             case 37:
@@ -156,21 +159,20 @@ document.onkeydown = function (evt){
                 }
                 player.speed = new Vector2d(0, 1)
                 break;
-            // case 32:
-            //     clearInterval(myInterval)
-            //     ctx.font = "50px Arial";
-            //     ctx.fillStyle = 'red'
-            //     ctx.fillText("PAUSE", 290,360)
-            //     if(confirm("Bạn đã DỪNG trò chơi. Bạn có muốn tiếp tục")) {
-            //         setInterval(function (){
-            //             player.move();
-            //             player.Death();
-            //             drawScore();
-            //             if(player.Eat(apple)) {
-            //                 player.Grow();
-            //                 apple.draw();
-            //             }
-            //         },100   );
-            // }
         }
     }
+
+    //Change back-ground
+let index = 0;
+function changeBackGround() {
+    let backImg = ['url("./Picture/Stage2.jpg")','url("./Picture/Stage.jpg")','url("./Picture/Stage1.jpg")',
+                   'url("./Picture/Stage3.jpg")','url("./Picture/Stage4.jpg")']
+    new Audio("./audio/button.mp3").play()
+    if (index === 4) {
+        index = 0;
+        document.querySelector("body").style.backgroundImage = backImg[index];
+    } else {
+        index++;
+        document.querySelector("body").style.backgroundImage = backImg[index];
+    }
+}
